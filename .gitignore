@@ -1,0 +1,38 @@
+# ignore editor swap files
+*~
+.*.swp
+.*.swo
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# KDE directory preferences
+.directory
+
+# LibreOffice locks
+.~lock.*#
+
+# ignore qtcreator files
+*.pro.user
+*.user*
+
+# ignore user.pri, it should be local per user
+user.pri
+
+# ignore user.cmake, it should be local per user
+user.cmake
+
+# ignore build and distribution directories
+build*/
+_build*/
+_install*/
+dist/
+
+# ignore generated debian packages
+*.deb
+*.build
+*.changes
