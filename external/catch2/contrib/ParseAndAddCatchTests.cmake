@@ -108,7 +108,7 @@ function(ParseAndAddCatchTests_ParseFile SourceFile TestTarget)
     ParseAndAddCatchTests_RemoveComments(Contents)
 
     # Find definition of test names
-    string(REGEX MATCHALL "[ \t]*(CATCH_)?(TEMPLATE_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)[ \t]*\\([ \t\n]*\"[^\"]*\"[ \t\n]*,[ \t\n]*\"[^\"]*\"([^\(\)]+(\\([^\)]*\\))*)*\\)+[ \t\n]*{+[ \t]*(//[^\n]*[Tt][Ii][Mm][Ee][Oo][Uu][Tt][ \t]*[0-9]+)*" Tests "${Contents}")
+    string(REGEX MATCHALL "[ \t]*(CATCH_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)[ \t]*\\([^\)]+\\)+[ \t\n]*{+[ \t]*(//[^\n]*[Tt][Ii][Mm][Ee][Oo][Uu][Tt][ \t]*[0-9]+)*" Tests "${Contents}")
 
     if(PARSE_CATCH_TESTS_ADD_TO_CONFIGURE_DEPENDS AND Tests)
       ParseAndAddCatchTests_PrintDebugMessage("Adding ${SourceFile} to CMAKE_CONFIGURE_DEPENDS property")
@@ -131,8 +131,8 @@ function(ParseAndAddCatchTests_ParseFile SourceFile TestTarget)
         string(REGEX REPLACE "\\\\\n|\n" "" TestName "${TestName}")
 
         # Get test type and fixture if applicable
-        string(REGEX MATCH "(CATCH_)?(TEMPLATE_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)[ \t]*\\([^,^\"]*" TestTypeAndFixture "${TestName}")
-        string(REGEX MATCH "(CATCH_)?(TEMPLATE_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)" TestType "${TestTypeAndFixture}")
+        string(REGEX MATCH "(CATCH_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)[ \t]*\\([^,^\"]*" TestTypeAndFixture "${TestName}")
+        string(REGEX MATCH "(CATCH_)?(TEST_CASE_METHOD|SCENARIO|TEST_CASE)" TestType "${TestTypeAndFixture}")
         string(REGEX REPLACE "${TestType}\\([ \t]*" "" TestFixture "${TestTypeAndFixture}")
 
         # Get string parts of test definition
@@ -204,11 +204,6 @@ function(ParseAndAddCatchTests_ParseFile SourceFile TestTarget)
                 message(STATUS "using CMake 3.18.0 workaround")
                 set(CTestName "\"${CTestName}\"")
             endif()
-
-	    # Handle template test cases
-	    if("${TestTypeAndFixture}" MATCHES ".*TEMPLATE_.*")
-	      set(Name "${Name} - *")
-	    endif()
 
             # Add the test and set its properties
             message(STATUS "add_test(NAME \"${CTestName}\" COMMAND ${OptionalCatchTestLauncher} $<TARGET_FILE:${TestTarget}> ${Name} ${AdditionalCatchParameters})")
